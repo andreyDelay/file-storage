@@ -49,3 +49,5 @@ Desktop.ini
 ######################
 *.log
 logs/*
+
+/file-storage*
