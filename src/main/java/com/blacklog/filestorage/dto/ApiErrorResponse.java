@@ -8,9 +8,4 @@ import lombok.Data;
 public class ApiErrorResponse {
 	private String code;
 	private String message;
-
-	public ApiErrorResponse(Enum<?> code, String message) {
-		this.code = code.name();
-		this.message = message;
-	}
 }
