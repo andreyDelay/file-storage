@@ -1,16 +1,12 @@
-server:
-  port: 8080
-
 spring:
   servlet:
     multipart:
       enabled: true
-      max-file-size: 50MB
-      max-request-size: 50MB
+      max-file-size: 150MB
+      max-request-size: 150MB
 
 
 storage:
   details:
     parent-folder: file-storage
-    base-tp-folder: basetp
-    base-tp-filename: Base TP
+    required-file-extension: xlsx
