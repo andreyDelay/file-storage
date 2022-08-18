@@ -50,11 +50,16 @@ class FileStorageApplicationTests {
 	private String controllerUrl;
 
 	private static final String testFilename = "testFile.xlsx";
-	private static final String testFolder = "file-storage";
+	private static final String testDirectory = "file-storage";
 
 	@BeforeAll
 	static void beforeAll() throws IOException {
-		Path testFilePath = Paths.get(testFolder, testFilename);
+		Path storageDirectory = Paths.get(testDirectory);
+		if (Files.notExists(storageDirectory)) {
+			Files.createDirectories(storageDirectory);
+		}
+
+		Path testFilePath = Paths.get(testDirectory, testFilename);
 		Path createdFilePath = Files.createFile(testFilePath);
 		FileWriter fileWriter = new FileWriter(createdFilePath.toString());
 		fileWriter.write("any content for test file");
@@ -63,7 +68,7 @@ class FileStorageApplicationTests {
 
 	@AfterAll
 	static void afterAll() throws IOException {
-		Files.delete(Paths.get(testFolder, testFilename));
+		Files.delete(Paths.get(testDirectory, testFilename));
 	}
 
 	@Test
@@ -96,7 +101,7 @@ class FileStorageApplicationTests {
 	@Test
 	void controllerShouldDownloadFile() throws Exception {
 		//given
-		File file = new File(Paths.get(testFolder, testFilename).toString());
+		File file = new File(Paths.get(testDirectory, testFilename).toString());
 		String filename = file.getName();
 		String filePath = file.getPath();
 		long fileSize = Files.size(file.toPath());
