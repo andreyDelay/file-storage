@@ -49,11 +49,13 @@ class FileStorageApplicationTests {
 	@Value("${api.url}")
 	private String controllerUrl;
 
-	private static final String testFilePath = "file-storage/testFilePath";
+	private static final String testFilename = "testFile.xlsx";
+	private static final String testFolder = "file-storage";
 
 	@BeforeAll
 	static void beforeAll() throws IOException {
-		Path createdFilePath = Files.createFile(Paths.get(testFilePath));
+		Path testFilePath = Paths.get(testFolder, testFilename);
+		Path createdFilePath = Files.createFile(testFilePath);
 		FileWriter fileWriter = new FileWriter(createdFilePath.toString());
 		fileWriter.write("any content for test file");
 		fileWriter.close();
@@ -61,7 +63,7 @@ class FileStorageApplicationTests {
 
 	@AfterAll
 	static void afterAll() throws IOException {
-		Files.delete(Paths.get(testFilePath));
+		Files.delete(Paths.get(testFolder, testFilename));
 	}
 
 	@Test
@@ -94,7 +96,7 @@ class FileStorageApplicationTests {
 	@Test
 	void controllerShouldDownloadFile() throws Exception {
 		//given
-		File file = new File(testFilePath);
+		File file = new File(Paths.get(testFolder, testFilename).toString());
 		String filename = file.getName();
 		String filePath = file.getPath();
 		long fileSize = Files.size(file.toPath());
@@ -114,7 +116,7 @@ class FileStorageApplicationTests {
 				.andDo(print())
 		//then
 				.andExpect(status().isOk())
-				.andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
+				.andExpect(content().contentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
 				.andReturn();
 
 		long responseContentLength = mvcResult.getResponse().getContentAsByteArray().length;
