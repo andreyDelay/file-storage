@@ -1,12 +1,9 @@
 package com.blacklog.filestorage.service;
 
+import com.blacklog.filestorage.config.FileStorageProperties;
 import com.blacklog.filestorage.dto.SavedFileInfo;
 import com.blacklog.filestorage.exception.InvalidFileException;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
@@ -18,12 +15,16 @@ import java.nio.file.Files;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@SpringBootTest
-@ComponentScan(lazyInit = true)
 class FileSystemStorageServiceTest {
 
-	@Autowired
 	private FileStorageService storageService;
+
+	public FileSystemStorageServiceTest() {
+		FileStorageProperties storageProperties = new FileStorageProperties();
+		storageProperties.setRequiredFileExtension("xlsx");
+		storageProperties.setParentFolder("file-storage");
+		this.storageService = new FileSystemStorageService(storageProperties);
+	}
 
 	@Test
 	void shouldThrowExceptionWhenFileExtensionNotPresent() throws IOException {
