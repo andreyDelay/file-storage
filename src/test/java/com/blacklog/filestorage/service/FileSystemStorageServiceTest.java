@@ -27,13 +27,13 @@ class FileSystemStorageServiceTest {
 	}
 
 	@Test
-	void shouldThrowExceptionWhenFileExtensionNotPresent() throws IOException {
+	void shouldThrowExceptionWhenFileExtensionNotPresent() {
 		MockMultipartFile multipartFile = new MockMultipartFile("test", "test".getBytes());
 		assertThrows(InvalidFileException.class, () -> storageService.saveFile(multipartFile));
 	}
 
 	@Test
-	void shouldThrowExceptionWhenFilenameNotSpecified() throws IOException {
+	void shouldThrowExceptionWhenFilenameNotSpecified() {
 		MockMultipartFile multipartFile = new MockMultipartFile(" ", "test".getBytes());
 		assertThrows(InvalidFileException.class, () -> storageService.saveFile(multipartFile));
 	}
