@@ -26,7 +26,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class FileSystemStorageService implements FileStorageService {
 
-	private final FileStorageProperties storageConfig;
+	private final FileStorageProperties storageProperties;
 
 	@Override
 	public SavedFileInfo saveFile(MultipartFile multipartFile) {
@@ -38,7 +38,7 @@ public class FileSystemStorageService implements FileStorageService {
 
 		try (InputStream is = multipartFile.getInputStream()) {
 			String fileName = multipartFile.getOriginalFilename();
-			Path filepath = Path.of(storageConfig.getParentFolder(), fileName);
+			Path filepath = Path.of(storageProperties.getParentFolder(), fileName);
 
 			if (!Files.exists(filepath)) {
 				Files.createDirectories(filepath);
@@ -87,6 +87,6 @@ public class FileSystemStorageService implements FileStorageService {
 		}
 		String fileExtension = FilenameUtils.getExtension(originalFilename);
 
-		return fileExtension.equalsIgnoreCase(storageConfig.getRequiredFileExtension());
+		return fileExtension.equalsIgnoreCase(storageProperties.getRequiredFileExtension());
 	}
 }
