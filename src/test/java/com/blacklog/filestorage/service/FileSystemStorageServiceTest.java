@@ -1,6 +1,7 @@
 package com.blacklog.filestorage.service;
 
 import com.blacklog.filestorage.config.FileStorageProperties;
+import com.blacklog.filestorage.dto.DownloadRequestDto;
 import com.blacklog.filestorage.dto.SavedFileInfo;
 import com.blacklog.filestorage.exception.InvalidFileException;
 import org.junit.jupiter.api.Test;
@@ -44,12 +45,18 @@ class FileSystemStorageServiceTest {
 		MockMultipartFile multipartFile =
 				new MockMultipartFile("1.xlsx","1.xlsx", MediaType.TEXT_PLAIN_VALUE, "test".getBytes());
 		//when
-		SavedFileInfo savedFileResponse = storageService.saveFile(multipartFile);
+		SavedFileInfo savedFileInfo = storageService.saveFile(multipartFile);
+
 		//then
-		assertEquals(multipartFile.getSize(),  savedFileResponse.getSize());
+		assertEquals(multipartFile.getSize(),  savedFileInfo.getSize());
+
+		//given
+		DownloadRequestDto downloadRequest = new DownloadRequestDto();
+		downloadRequest.setFilepath(savedFileInfo.getFilepath());
 
 		//when
-		Resource resource = storageService.downloadFile(savedFileResponse);
+		Resource resource = storageService.downloadFile(downloadRequest);
+
 		//then
 		File file = resource.getFile();
 		assertEquals(multipartFile.getName(), file.getName());

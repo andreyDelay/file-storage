@@ -1,5 +1,6 @@
 package com.blacklog.filestorage.controller;
 
+import com.blacklog.filestorage.dto.DownloadRequestDto;
 import com.blacklog.filestorage.dto.SavedFileInfo;
 import com.blacklog.filestorage.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class FileStorageController {
 	@PostMapping(value = "/download",
 			consumes = MediaType.APPLICATION_JSON_VALUE,
 			produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public Resource downloadFile(@RequestBody SavedFileInfo fileInfo) {
-		return fileStorageService.downloadFile(fileInfo);
+	public Resource downloadFile(@RequestBody DownloadRequestDto downloadRequest) {
+		return fileStorageService.downloadFile(downloadRequest);
 	}
 }

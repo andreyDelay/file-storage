@@ -1,6 +1,7 @@
 package com.blacklog.filestorage.service;
 
 import com.blacklog.filestorage.config.FileStorageProperties;
+import com.blacklog.filestorage.dto.DownloadRequestDto;
 import com.blacklog.filestorage.dto.SavedFileInfo;
 import com.blacklog.filestorage.exception.DownloadFileException;
 import com.blacklog.filestorage.exception.InvalidFileException;
@@ -58,18 +59,18 @@ public class FileSystemStorageService implements FileStorageService {
 	}
 
 	@Override
-	public Resource downloadFile(SavedFileInfo fileInfo) {
+	public Resource downloadFile(DownloadRequestDto downloadRequest) {
 		log.info("In downloadFile method.");
-		if (Objects.isNull(fileInfo.getFilepath())) {
+		if (Objects.isNull(downloadRequest.getFilepath())) {
 			log.error("Error - wrong filepath.");
 			throw new DownloadFileException("The path to the file is not specified.");
 		}
 
 		try {
-			File targetFile = new File(fileInfo.getFilepath());
+			File targetFile = new File(downloadRequest.getFilepath());
 			if (!targetFile.exists()) {
 				log.error("Path to a file incorrect, the file by this path not exists. Path: {}", targetFile.getPath());
-				throw new DownloadFileException(String.format("File with name - %s, not found.", fileInfo.getFilename()));
+				throw new DownloadFileException(String.format("File by path - %s, not found.", downloadRequest.getFilepath()));
 			}
 
 			return new UrlResource(targetFile.toURI());
