@@ -1,6 +1,5 @@
 package com.blacklog.filestorage.controller;
 
-import com.blacklog.filestorage.dto.DownloadRequestDto;
 import com.blacklog.filestorage.dto.SavedFileInfo;
 import com.blacklog.filestorage.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
@@ -17,16 +16,16 @@ public class FileStorageController {
 
 	private final FileStorageService fileStorageService;
 
-	@PostMapping("/upload")
+	@PostMapping(value = "/upload",
+				consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+				produces = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.CREATED)
-	public SavedFileInfo uploadFile(@RequestParam("file") MultipartFile file) {
+	public SavedFileInfo uploadFile(@RequestPart() MultipartFile file) {
 		return fileStorageService.saveFile(file);
 	}
 
-	@PostMapping(value = "/download",
-			consumes = MediaType.APPLICATION_JSON_VALUE,
-			produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public Resource downloadFile(@RequestBody DownloadRequestDto downloadRequest) {
-		return fileStorageService.downloadFile(downloadRequest);
+	@GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public Resource downloadFile(@RequestParam String filepath) {
+		return fileStorageService.downloadFile(filepath);
 	}
 }
