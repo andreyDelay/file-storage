@@ -1,7 +1,6 @@
 package com.blacklog.filestorage.service;
 
 import com.blacklog.filestorage.config.FileStorageProperties;
-import com.blacklog.filestorage.dto.DownloadRequestDto;
 import com.blacklog.filestorage.dto.SavedFileInfo;
 import com.blacklog.filestorage.exception.InvalidFileException;
 import org.junit.jupiter.api.Test;
@@ -51,11 +50,10 @@ class FileSystemStorageServiceTest {
 		assertEquals(multipartFile.getSize(),  savedFileInfo.getSize());
 
 		//given
-		DownloadRequestDto downloadRequest = new DownloadRequestDto();
-		downloadRequest.setFilepath(savedFileInfo.getFilepath());
+		String filepath = savedFileInfo.getFilepath();
 
 		//when
-		Resource resource = storageService.downloadFile(downloadRequest);
+		Resource resource = storageService.downloadFile(filepath);
 
 		//then
 		File file = resource.getFile();

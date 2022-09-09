@@ -26,8 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -102,22 +101,12 @@ class FileStorageApplicationTests {
 	void controllerShouldDownloadFile() throws Exception {
 		//given
 		File file = new File(Paths.get(testDirectory, testFilename).toString());
-		String filename = file.getName();
 		String filePath = file.getPath();
 		long fileSize = Files.size(file.toPath());
 
-		SavedFileInfo requiredFileDetails = SavedFileInfo.builder()
-				.filename(filename)
-				.filepath(filePath)
-				.size(fileSize)
-				.build();
-		ObjectMapper objectMapper = new ObjectMapper();
-		String jsonBody = objectMapper.writeValueAsString(requiredFileDetails);
-
 		//when
-		MvcResult mvcResult = mockMvc.perform(post(controllerUrl + "/download")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(jsonBody))
+		MvcResult mvcResult = mockMvc.perform(get(controllerUrl + "/download")
+						.param("filepath", filePath))
 				.andDo(print())
 		//then
 				.andExpect(status().isOk())
