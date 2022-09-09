@@ -1,7 +1,6 @@
 package com.blacklog.filestorage.service;
 
 import com.blacklog.filestorage.config.FileStorageProperties;
-import com.blacklog.filestorage.dto.DownloadRequestDto;
 import com.blacklog.filestorage.dto.SavedFileInfo;
 import com.blacklog.filestorage.exception.DownloadFileException;
 import com.blacklog.filestorage.exception.InvalidFileException;
@@ -47,6 +46,7 @@ public class FileSystemStorageService implements FileStorageService {
 
 			Files.copy(is, filepath, StandardCopyOption.REPLACE_EXISTING);
 
+			log.info("File with filename {}, has been saved.", fileName);
 			return SavedFileInfo.builder()
 					.size(multipartFile.getSize())
 					.filename(fileName)
@@ -59,20 +59,21 @@ public class FileSystemStorageService implements FileStorageService {
 	}
 
 	@Override
-	public Resource downloadFile(DownloadRequestDto downloadRequest) {
+	public Resource downloadFile(String filepath) {
 		log.info("In downloadFile method.");
-		if (Objects.isNull(downloadRequest.getFilepath())) {
+		if (Objects.isNull(filepath)) {
 			log.error("Error - wrong filepath.");
 			throw new DownloadFileException("The path to the file is not specified.");
 		}
 
 		try {
-			File targetFile = new File(downloadRequest.getFilepath());
+			File targetFile = new File(filepath);
 			if (!targetFile.exists()) {
 				log.error("Path to a file incorrect, the file by this path not exists. Path: {}", targetFile.getPath());
-				throw new DownloadFileException(String.format("File by path - %s, not found.", downloadRequest.getFilepath()));
+				throw new DownloadFileException(String.format("File with path - %s not found.", filepath));
 			}
 
+			log.info("File with filename {}, has been found and will returned.", targetFile.getName());
 			return new UrlResource(targetFile.toURI());
 		} catch (IOException e) {
 			log.error("Unexpected error. Cannot get(download) a file resource.");
