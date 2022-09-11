@@ -59,27 +59,21 @@ public class FileSystemStorageService implements FileStorageService {
 	}
 
 	@Override
-	public Resource downloadFile(String filepath) {
+	public File downloadFile(String filepath) {
 		log.info("In downloadFile method.");
 		if (Objects.isNull(filepath)) {
 			log.error("Error - wrong filepath.");
 			throw new DownloadFileException("The path to the file is not specified.");
 		}
 
-		try {
-			File targetFile = new File(filepath);
-			if (!targetFile.exists()) {
-				log.error("Path to a file incorrect, the file by this path not exists. Path: {}", targetFile.getPath());
-				throw new DownloadFileException(String.format("File with path - %s not found.", filepath));
-			}
-
-			log.info("File with filename {}, has been found and will returned.", targetFile.getName());
-			return new UrlResource(targetFile.toURI());
-		} catch (IOException e) {
-			log.error("Unexpected error. Cannot get(download) a file resource.");
-			throw new DownloadFileException(
-					String.format("Couldn't read required file. Service error: %s", e.getMessage()));
+		File targetFile = new File(filepath);
+		if (!targetFile.exists()) {
+			log.error("Path to a file incorrect, the file by this path not exists. Path: {}", targetFile.getPath());
+			throw new DownloadFileException(String.format("File with path - %s not found.", filepath));
 		}
+
+		log.info("File with filename {}, has been found and will returned.", targetFile.getName());
+		return targetFile;
 	}
 
 	private boolean isFileValid(MultipartFile multipartFile) {

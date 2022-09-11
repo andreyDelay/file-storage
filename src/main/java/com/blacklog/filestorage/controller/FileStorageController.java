@@ -3,11 +3,17 @@ package com.blacklog.filestorage.controller;
 import com.blacklog.filestorage.dto.SavedFileInfo;
 import com.blacklog.filestorage.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 @RestController
 @RequestMapping("/api/v1/files")
@@ -25,7 +31,26 @@ public class FileStorageController {
 	}
 
 	@GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public Resource downloadFile(@RequestParam String filepath) {
-		return fileStorageService.downloadFile(filepath);
+	public ResponseEntity<Resource> downloadFile(@RequestParam("filepath") String filepath) {
+		File file = fileStorageService.downloadFile(filepath);
+		String filename = file.getName();
+
+		ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
+				.filename(filename, StandardCharsets.UTF_8)
+				.build();
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentDisposition(contentDisposition);
+
+		try {
+			ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(file.toPath()));
+			return ResponseEntity.ok()
+					.headers(headers)
+					.contentLength(resource.contentLength())
+					.contentType(MediaType.parseMediaType("application/octet-stream"))
+					.body(resource);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 }
