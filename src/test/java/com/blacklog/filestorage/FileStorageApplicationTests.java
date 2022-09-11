@@ -2,8 +2,6 @@ package com.blacklog.filestorage;
 
 import com.blacklog.filestorage.config.FileStorageProperties;
 import com.blacklog.filestorage.controller.FileStorageController;
-import com.blacklog.filestorage.dto.SavedFileInfo;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.data.Percentage;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -26,7 +24,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -110,7 +109,7 @@ class FileStorageApplicationTests {
 				.andDo(print())
 		//then
 				.andExpect(status().isOk())
-				.andExpect(content().contentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+				.andExpect(content().contentType(MediaType.APPLICATION_OCTET_STREAM))
 				.andReturn();
 
 		long responseContentLength = mvcResult.getResponse().getContentAsByteArray().length;

@@ -53,10 +53,9 @@ class FileSystemStorageServiceTest {
 		String filepath = savedFileInfo.getFilepath();
 
 		//when
-		Resource resource = storageService.downloadFile(filepath);
+		File file = storageService.downloadFile(filepath);
 
 		//then
-		File file = resource.getFile();
 		assertEquals(multipartFile.getName(), file.getName());
 		assertEquals(multipartFile.getSize(), Files.size(file.toPath()));
 
