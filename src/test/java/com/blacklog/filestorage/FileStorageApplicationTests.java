@@ -12,7 +12,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -31,7 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @SpringBootTest
-@ActiveProfiles("test")
 @AutoConfigureMockMvc
 class FileStorageApplicationTests {
 
@@ -44,8 +42,8 @@ class FileStorageApplicationTests {
 	@Autowired
 	private FileStorageProperties storageProperties;
 
-	@Value("${api.url}")
-	private String controllerUrl;
+	@Value("${server.servlet.context-path}")
+	private String contextPath;
 
 	private static final String testFilename = "testFile.xlsx";
 	private static final String testDirectory = "file-storage";
@@ -83,8 +81,10 @@ class FileStorageApplicationTests {
 						MediaType.APPLICATION_OCTET_STREAM_VALUE,
 						"test.xlsx".getBytes());
 		//when
-		mockMvc.perform(multipart(controllerUrl + "/upload")
-						.file(mockMultipartFile))
+		/*mockMvc.perform(multipart(apiUrl + "/files/upload")*/
+		mockMvc.perform(multipart(contextPath + "/files/upload")
+						.file(mockMultipartFile)
+						.contextPath(contextPath))
 				.andDo(print())
 		//then
 				.andExpectAll(
@@ -104,8 +104,9 @@ class FileStorageApplicationTests {
 		long fileSize = Files.size(file.toPath());
 
 		//when
-		MvcResult mvcResult = mockMvc.perform(get(controllerUrl + "/download")
-						.param("filepath", filePath))
+		MvcResult mvcResult = mockMvc.perform(get(contextPath + "/files/download")
+						.param("filepath", filePath)
+						.contextPath(contextPath))
 				.andDo(print())
 		//then
 				.andExpect(status().isOk())

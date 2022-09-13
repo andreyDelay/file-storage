@@ -5,7 +5,6 @@ import com.blacklog.filestorage.service.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 @RestController
-@RequestMapping("/api/v1/files")
+@RequestMapping("/files")
 @RequiredArgsConstructor
 public class FileStorageController {
 

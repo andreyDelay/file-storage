@@ -4,7 +4,6 @@ import com.blacklog.filestorage.config.FileStorageProperties;
 import com.blacklog.filestorage.dto.SavedFileInfo;
 import com.blacklog.filestorage.exception.InvalidFileException;
 import org.junit.jupiter.api.Test;
-import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 
